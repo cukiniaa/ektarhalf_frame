@@ -2,61 +2,134 @@
  * @NOTE: Prepend a `~` to css file paths that are in your node_modules
  *        See https://github.com/webpack-contrib/sass-loader#imports
  */
-body {
-  position: relative;
-  color: white;
+#root {
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  width: 100%;
   height: 100vh;
-  background: linear-gradient(
-    200.96deg,
-    #fedc2a -29.09%,
-    #dd5789 51.77%,
-    #7a2c9e 129.35%
-  );
-  font-family: sans-serif;
-  overflow-y: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
-button {
-  background-color: white;
-  padding: 10px 20px;
-  border-radius: 10px;
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #f0f0f0;
+}
+
+.menu-bar {
+  background-color: #e0e0e0;
+  padding: 8px;
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid #ccc;
+}
+
+.menu-item {
+  background: none;
   border: none;
-  appearance: none;
-  font-size: 1.3rem;
-  box-shadow: 0px 8px 28px -6px rgba(24, 39, 75, 0.12),
-    0px 18px 88px -4px rgba(24, 39, 75, 0.14);
-  transition: all ease-in 0.1s;
+  padding: 4px 12px;
   cursor: pointer;
-  opacity: 0.9;
+  font-size: 14px;
 }
 
-button:hover {
-  transform: scale(1.05);
-  opacity: 1;
+.menu-item:hover {
+  background-color: #d0d0d0;
+  border-radius: 4px;
 }
 
-li {
-  list-style: none;
-}
-
-a {
-  text-decoration: none;
-  height: fit-content;
-  width: fit-content;
-  margin: 10px;
-}
-
-a:hover {
-  opacity: 1;
-  text-decoration: none;
-}
-
-.Hello {
+.main-content {
+  flex: 1;
   display: flex;
-  justify-content: center;
   align-items: center;
-  margin: 20px 0;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.photos-container {
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+  flex: 1;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.photo-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.photo-frame {
+  width: 160px;
+  height: 240px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.round-button {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.round-button:hover {
+  background-color: #45a049;
+}
+
+.side-button {
+  width: 40px;
+  height: 80px;
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 20px;
+  transition: background-color 0.3s;
+  flex-shrink: 0;
+}
+
+.side-button:hover {
+  background-color: #1976D2;
+}
+
+.left-button {
+  margin-right: 20px;
+}
+
+.right-button {
+  margin-left: 20px;
+}
+
+.error-message {
+  color: #d32f2f;
+  background-color: #ffebee;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #ffcdd2;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.loading-message {
+  color: #1976D2;
+  font-size: 16px;
+  margin: 0 auto;
 }
