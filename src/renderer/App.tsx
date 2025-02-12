@@ -6,8 +6,13 @@ import './App.css';
 
 function View() {
   const [img, setImg] = useState<string | null>(null);
-  const [imgPath, setImgPath] = useState<string | null>(null);
   const [imgDir, setImgDir] = useState<string | null>(null);
+  const [imgInDir, setImgInDir] = useState<string[]>([]);
+
+  const getImgInDir = async (dir: string) => {
+    const imgs = await window.electron.ipcRenderer.getImgInDir(dir);
+    setImgInDir(imgs);
+  };
 
   const handlePhotoSelected = async (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -15,9 +20,9 @@ function View() {
     const { files } = event.target;
     if (!files || !files.length) return;
     setImg(URL.createObjectURL(files[0]));
-    setImgPath(files[0].path);
     const dir = files[0].path.match(/(.*)[/\\]/);
     setImgDir(dir ? dir[1] : null);
+    getImgInDir(dir ? dir[1] : '');
   };
 
   return (
