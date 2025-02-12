@@ -6,6 +6,7 @@ import './App.css';
 
 function View() {
   const [img, setImg] = useState<string | null>(null);
+  const [imgPath, setImgPath] = useState<string | null>(null);
   const [imgDir, setImgDir] = useState<string | null>(null);
   const [imgInDir, setImgInDir] = useState<string[]>([]);
 
@@ -20,9 +21,28 @@ function View() {
     const { files } = event.target;
     if (!files || !files.length) return;
     setImg(URL.createObjectURL(files[0]));
+    setImgPath(files[0].path);
     const dir = files[0].path.match(/(.*)[/\\]/);
     setImgDir(dir ? dir[1] : null);
     getImgInDir(dir ? dir[1] : '');
+  };
+
+  const setNewImg = async (index: number) => {
+    const newImg = imgInDir[index];
+    setImg(`file://${newImg}`);
+    setImgPath(newImg);
+  };
+
+  const nextRight = async (event: FormEvent<HTMLButtonElement>) => {
+    const find = imgInDir.findIndex((ig) => ig === imgPath);
+    if (find === -1) return;
+    setNewImg((find + 1) % imgInDir.length);
+  };
+
+  const nextLeft = async (event: FormEvent<HTMLButtonElement>) => {
+    const find = imgInDir.findIndex((ig) => ig === imgPath);
+    if (find === -1) return;
+    setNewImg((imgInDir.length + find + 1) % imgInDir.length);
   };
 
   return (
@@ -45,7 +65,11 @@ function View() {
           <img src={img || undefined} alt="Main" className="g-top-photo" />
         </div>
         <div className="g-container">
-          <button type="button" className="side-button left-button">
+          <button
+            type="button"
+            className="side-button left-button"
+            onClick={nextLeft}
+          >
             ←
           </button>
           <div className="g-photo-grid">
@@ -74,7 +98,11 @@ function View() {
               </button>
             </div>
           </div>
-          <button type="button" className="side-button right-button">
+          <button
+            type="button"
+            className="side-button right-button"
+            onClick={nextRight}
+          >
             →
           </button>
         </div>

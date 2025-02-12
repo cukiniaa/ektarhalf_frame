@@ -38,7 +38,9 @@ ipcMain.handle('getImgInDir', async (event, dir: string): Promise<string[]> => {
       if (err) {
         reject(err);
       }
-      const images = files.filter((file) => /\.(png|jpe?g|gif)$/.test(file));
+      const images = files
+        .filter((file) => /\.(png|jpe?g|gif)$/.test(file))
+        .map((file) => path.join(dir, file));
       resolve(images);
     });
   });
@@ -91,6 +93,7 @@ const createWindow = async () => {
       preload: app.isPackaged
         ? path.join(__dirname, 'preload.js')
         : path.join(__dirname, '../../.erb/dll/preload.js'),
+      webSecurity: false, // access files by path, perhaps remove this and move the functionality to ipcMain?
     },
   });
 
