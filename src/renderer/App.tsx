@@ -27,8 +27,7 @@ function View() {
     getImgInDir(dir ? dir[1] : '');
   };
 
-  const setNewImg = async (index: number) => {
-    const newImg = imgInDir[index];
+  const setNewImg = async (newImg: string) => {
     setImg(`file://${newImg}`);
     setImgPath(newImg);
   };
@@ -36,13 +35,15 @@ function View() {
   const nextRight = async (event: FormEvent<HTMLButtonElement>) => {
     const find = imgInDir.findIndex((ig) => ig === imgPath);
     if (find === -1) return;
-    setNewImg((find + 1) % imgInDir.length);
+    const newInd = (find + 1) % imgInDir.length;
+    setNewImg(imgInDir[newInd]);
   };
 
   const nextLeft = async (event: FormEvent<HTMLButtonElement>) => {
     const find = imgInDir.findIndex((ig) => ig === imgPath);
     if (find === -1) return;
-    setNewImg((imgInDir.length + find + 1) % imgInDir.length);
+    const newInd = (imgInDir.length + find - 1) % imgInDir.length;
+    setNewImg(imgInDir[newInd]);
   };
 
   return (
