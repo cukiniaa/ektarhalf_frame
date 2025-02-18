@@ -2,6 +2,7 @@ import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import { useState } from 'react';
 import { GoFileDirectory } from 'react-icons/go';
 import { FaArrowRotateRight } from 'react-icons/fa6';
+import { Image } from 'image-js';
 import './App.css';
 
 function View() {
@@ -9,10 +10,37 @@ function View() {
   const [imgPath, setImgPath] = useState<string | null>(null);
   const [imgDir, setImgDir] = useState<string | null>(null);
   const [imgInDir, setImgInDir] = useState<string[]>([]);
+  const [leftImg, setLeftImg] = useState<string | null>(null);
+  const [rightImg, setRightImg] = useState<string | null>(null);
 
   const getImgInDir = async (dir: string) => {
     const imgs = await window.electron.ipcRenderer.getImgInDir(dir);
     setImgInDir(imgs);
+  };
+
+  const splitImg = async (path: string) => {
+    const org = await Image.load(`file://${path}`);
+    const left = org.crop({
+      x: 0,
+      y: 0,
+      width: org.width / 2,
+      height: org.height,
+    });
+    setLeftImg(left.toDataURL());
+
+    const right = org.crop({
+      x: org.width / 2,
+      y: 0,
+      width: org.width / 2,
+      height: org.height,
+    });
+    setRightImg(right.toDataURL());
+  };
+
+  const setNewImg = async (newImg: string) => {
+    setImg(`file://${newImg}`);
+    setImgPath(newImg);
+    splitImg(newImg);
   };
 
   const handlePhotoSelected = async (
@@ -20,16 +48,10 @@ function View() {
   ) => {
     const { files } = event.target;
     if (!files || !files.length) return;
-    setImg(URL.createObjectURL(files[0]));
-    setImgPath(files[0].path);
+    setNewImg(files[0].path);
     const dir = files[0].path.match(/(.*)[/\\]/);
     setImgDir(dir ? dir[1] : null);
     getImgInDir(dir ? dir[1] : '');
-  };
-
-  const setNewImg = async (newImg: string) => {
-    setImg(`file://${newImg}`);
-    setImgPath(newImg);
   };
 
   const nextRight = async (event: FormEvent<HTMLButtonElement>) => {
@@ -77,7 +99,7 @@ function View() {
             <div className="g-photo-wrapper">
               <div className="g-photo-item">
                 <img
-                  src={img || undefined}
+                  src={leftImg || undefined}
                   alt="Left"
                   className="g-large-photo"
                 />
@@ -89,7 +111,7 @@ function View() {
             <div className="g-photo-wrapper">
               <div className="g-photo-item">
                 <img
-                  src={img || undefined}
+                  src={rightImg || undefined}
                   alt="Right"
                   className="g-large-photo"
                 />
