@@ -116,6 +116,20 @@ ipcMain.handle(
   },
 );
 
+ipcMain.handle('rotateImg', async (_event, imgBase64: string): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const img = Buffer.from(imgBase64.split(',')[1], 'base64');
+      sharp(img)
+        .rotate(90)
+        .toBuffer()
+        .then((rotated) => {
+          resolve(imgBufferToString(rotated));
+        })
+        .catch(reject);
+    });
+  },
+);
+
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
   sourceMapSupport.install();

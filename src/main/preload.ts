@@ -30,6 +30,9 @@ const electronHandler = {
     getNextImgPath: (imgPath: string, direction: -1 | 1): Promise<string> => {
       return ipcRenderer.invoke('getNextImgPath', imgPath, direction);
     },
+    rotateImg: (imgBase64: string): Promise<string> => {
+      return ipcRenderer.invoke('rotateImg', imgBase64);
+    },
   },
 };
 

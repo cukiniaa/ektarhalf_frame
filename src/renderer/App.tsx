@@ -34,16 +34,33 @@ function View() {
     setImgDir(dir ? dir[1] : null);
   };
 
-  const nextRight = async (event: FormEvent<HTMLButtonElement>) => {
+  const nextRight = async () => {
     if (!imgPath) return;
     const newImg = await window.electron.ipcRenderer.getNextImgPath(imgPath, 1);
     setNewImg(newImg);
   };
 
-  const nextLeft = async (event: FormEvent<HTMLButtonElement>) => {
+  const nextLeft = async () => {
     if (!imgPath) return;
-    const newImgPath = await window.electron.ipcRenderer.getNextImgPath(imgPath, -1);
+    const newImgPath = await window.electron.ipcRenderer.getNextImgPath(
+      imgPath,
+      -1,
+    );
     setNewImg(newImgPath);
+  };
+
+  const rotateImg = async (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
+    const stateMap = {
+      'left-img': { img: leftImg, setFunc: setLeftImg },
+      'right-img': { img: rightImg, setFunc: setRightImg },
+    };
+    const state = event.currentTarget.id as keyof typeof stateMap;
+    const { img, setFunc } = stateMap[state] || [];
+    if (!img || !setFunc) return;
+
+    setFunc(await window.electron.ipcRenderer.rotateImg(img));
   };
 
   return (
@@ -82,7 +99,12 @@ function View() {
                   className="g-large-photo"
                 />
               </div>
-              <button type="button" className="g-button">
+              <button
+                type="button"
+                className="g-button"
+                id="left-img"
+                onClick={rotateImg}
+              >
                 <FaArrowRotateRight />
               </button>
             </div>
@@ -94,7 +116,12 @@ function View() {
                   className="g-large-photo"
                 />
               </div>
-              <button type="button" className="g-button">
+              <button
+                type="button"
+                className="g-button"
+                id="right-img"
+                onClick={rotateImg}
+              >
                 <FaArrowRotateRight />
               </button>
             </div>
