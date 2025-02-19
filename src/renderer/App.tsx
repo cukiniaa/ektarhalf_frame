@@ -9,17 +9,11 @@ function View() {
   const [img, setImg] = useState<string | null>(null);
   const [imgPath, setImgPath] = useState<string | null>(null);
   const [imgDir, setImgDir] = useState<string | null>(null);
-  const [imgInDir, setImgInDir] = useState<string[]>([]);
   const [leftImg, setLeftImg] = useState<string | null>(null);
   const [rightImg, setRightImg] = useState<string | null>(null);
 
-  const getImgInDir = async (dir: string) => {
-    const imgs = await window.electron.ipcRenderer.getImgInDir(dir);
-    setImgInDir(imgs);
-  };
-
   const splitImg = async (path: string) => {
-    const org = await Image.load(`file://${path}`);
+    const org = await Image.load(path);
     const left = org.crop({
       x: 0,
       y: 0,
@@ -38,9 +32,10 @@ function View() {
   };
 
   const setNewImg = async (newImg: string) => {
-    setImg(`file://${newImg}`);
+    const img64 = await window.electron.ipcRenderer.getImg(newImg);
     setImgPath(newImg);
-    splitImg(newImg);
+    setImg(img64);
+    splitImg(img64);
   };
 
   const handlePhotoSelected = async (
@@ -51,21 +46,18 @@ function View() {
     setNewImg(files[0].path);
     const dir = files[0].path.match(/(.*)[/\\]/);
     setImgDir(dir ? dir[1] : null);
-    getImgInDir(dir ? dir[1] : '');
   };
 
   const nextRight = async (event: FormEvent<HTMLButtonElement>) => {
-    const find = imgInDir.findIndex((ig) => ig === imgPath);
-    if (find === -1) return;
-    const newInd = (find + 1) % imgInDir.length;
-    setNewImg(imgInDir[newInd]);
+    if (!imgPath) return;
+    const newImg = await window.electron.ipcRenderer.getNextImg(imgPath, 1);
+    setNewImg(newImg);
   };
 
   const nextLeft = async (event: FormEvent<HTMLButtonElement>) => {
-    const find = imgInDir.findIndex((ig) => ig === imgPath);
-    if (find === -1) return;
-    const newInd = (imgInDir.length + find - 1) % imgInDir.length;
-    setNewImg(imgInDir[newInd]);
+    if (!imgPath) return;
+    const newImg = await window.electron.ipcRenderer.getNextImg(imgPath, -1);
+    setNewImg(newImg);
   };
 
   return (

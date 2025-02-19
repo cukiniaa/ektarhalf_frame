@@ -32,7 +32,7 @@ ipcMain.on('ipc-example', async (event, arg) => {
   event.reply('ipc-example', msgTemplate('pong'));
 });
 
-ipcMain.handle('getImgInDir', async (event, dir: string): Promise<string[]> => {
+const getImgInDir = async (dir: string): Promise<string[]> => {
   return new Promise((resolve, reject) => {
     fs.readdir(dir, (err, files) => {
       if (err) {
@@ -44,6 +44,41 @@ ipcMain.handle('getImgInDir', async (event, dir: string): Promise<string[]> => {
       resolve(images);
     });
   });
+};
+
+const getImgBase64 = async (imgPath: string): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    // TODO reject if not found
+    const imageBuffer = fs.readFileSync(imgPath);
+    resolve(`data:image/jpeg;base64,${imageBuffer.toString('base64')}`);
+  });
+};
+
+ipcMain.handle(
+  'getNextImg',
+  async (event, imgPath: string, direction: -1 | 1): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const dir = imgPath.match(/(.*)[/]/);
+      if (!dir || dir.length < 2) {
+        reject(new Error('Cannot find directory'));
+        return;
+      }
+      getImgInDir(dir[1])
+        .then((images) => {
+          const ind = images.findIndex((ig) => ig === imgPath);
+          if (ind === -1) {
+            reject(new Error('Cannot find image'));
+          }
+          const newInd = (images.length + ind + direction) % images.length;
+          resolve(images[newInd]);
+        })
+        .catch(reject);
+    });
+  },
+);
+
+ipcMain.handle('getImg', async (event, imgPath: string): Promise<string> => {
+  return getImgBase64(imgPath);
 });
 
 if (process.env.NODE_ENV === 'production') {
@@ -93,7 +128,6 @@ const createWindow = async () => {
       preload: app.isPackaged
         ? path.join(__dirname, 'preload.js')
         : path.join(__dirname, '../../.erb/dll/preload.js'),
-      webSecurity: false, // access files by path, perhaps remove this and move the functionality to ipcMain?
     },
   });
 
