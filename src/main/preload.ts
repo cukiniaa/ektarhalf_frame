@@ -21,11 +21,11 @@ const electronHandler = {
     once(channel: Channels, func: (...args: unknown[]) => void) {
       ipcRenderer.once(channel, (_event, ...args) => func(...args));
     },
-    getImg: (imgPath: string): Promise<string> => {
+    getImg: (imgPath: string): Promise<Buffer> => {
       return ipcRenderer.invoke('getImg', imgPath);
     },
-    getNextImg: (imgPath: string, direction: -1 | 1): Promise<string> => {
-      return ipcRenderer.invoke('getNextImg', imgPath, direction);
+    getNextImgPath: (imgPath: string, direction: -1 | 1): Promise<string> => {
+      return ipcRenderer.invoke('getNextImgPath', imgPath, direction);
     },
   },
 };

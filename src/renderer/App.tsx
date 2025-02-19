@@ -6,7 +6,7 @@ import { Image } from 'image-js';
 import './App.css';
 
 function View() {
-  const [img, setImg] = useState<string | null>(null);
+  const [imgUrl, setImgUrl] = useState<string | null>(null);
   const [imgPath, setImgPath] = useState<string | null>(null);
   const [imgDir, setImgDir] = useState<string | null>(null);
   const [leftImg, setLeftImg] = useState<string | null>(null);
@@ -31,11 +31,13 @@ function View() {
     setRightImg(right.toDataURL());
   };
 
-  const setNewImg = async (newImg: string) => {
-    const img64 = await window.electron.ipcRenderer.getImg(newImg);
-    setImgPath(newImg);
-    setImg(img64);
-    splitImg(img64);
+  const setNewImg = async (newPath: string) => {
+    const imgBuffer = await window.electron.ipcRenderer.getImg(newPath);
+    const blob = new Blob([imgBuffer], { type: 'image/jpeg' });
+    const url = URL.createObjectURL(blob);
+    setImgPath(newPath);
+    setImgUrl(url);
+    splitImg(url);
   };
 
   const handlePhotoSelected = async (
@@ -50,14 +52,14 @@ function View() {
 
   const nextRight = async (event: FormEvent<HTMLButtonElement>) => {
     if (!imgPath) return;
-    const newImg = await window.electron.ipcRenderer.getNextImg(imgPath, 1);
+    const newImg = await window.electron.ipcRenderer.getNextImgPath(imgPath, 1);
     setNewImg(newImg);
   };
 
   const nextLeft = async (event: FormEvent<HTMLButtonElement>) => {
     if (!imgPath) return;
-    const newImg = await window.electron.ipcRenderer.getNextImg(imgPath, -1);
-    setNewImg(newImg);
+    const newImgPath = await window.electron.ipcRenderer.getNextImgPath(imgPath, -1);
+    setNewImg(newImgPath);
   };
 
   return (
@@ -77,7 +79,7 @@ function View() {
 
       <div className="main-content">
         <div className="g-container-small-photo">
-          <img src={img || undefined} alt="Main" className="g-top-photo" />
+          <img src={imgUrl || undefined} alt="Main" className="g-top-photo" />
         </div>
         <div className="g-container">
           <button

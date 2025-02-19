@@ -46,16 +46,15 @@ const getImgInDir = async (dir: string): Promise<string[]> => {
   });
 };
 
-const getImgBase64 = async (imgPath: string): Promise<string> => {
+const getImgBuffer = async (imgPath: string): Promise<Buffer> => {
   return new Promise((resolve, reject) => {
     // TODO reject if not found
-    const imageBuffer = fs.readFileSync(imgPath);
-    resolve(`data:image/jpeg;base64,${imageBuffer.toString('base64')}`);
+    resolve(fs.readFileSync(imgPath));
   });
 };
 
 ipcMain.handle(
-  'getNextImg',
+  'getNextImgPath',
   async (event, imgPath: string, direction: -1 | 1): Promise<string> => {
     return new Promise((resolve, reject) => {
       const dir = imgPath.match(/(.*)[/]/);
@@ -77,8 +76,8 @@ ipcMain.handle(
   },
 );
 
-ipcMain.handle('getImg', async (event, imgPath: string): Promise<string> => {
-  return getImgBase64(imgPath);
+ipcMain.handle('getImg', async (event, imgPath: string): Promise<Buffer> => {
+  return getImgBuffer(imgPath);
 });
 
 if (process.env.NODE_ENV === 'production') {
