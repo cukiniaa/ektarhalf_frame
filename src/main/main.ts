@@ -69,47 +69,27 @@ ipcMain.handle('getImg', async (event, imgPath: string): Promise<string> => {
   return getImgBase64(imgPath);
 });
 
-ipcMain.handle(
-  'splitImg',
-  async (event, imgPath: string): Promise<{ left: string; right: string }> => {
-    return new Promise((resolve, reject) => {
-      let width: number;
-      let height: number;
-      const org = sharp(imgPath);
-      org
-        .metadata()
-        .then((metadata) => {
-          width = Math.round((metadata.width || 0) / 2) - divider / 2;
-          height = metadata.height || 0;
-        })
-        .then(() => {
-          const leftPromise = org
-            .clone()
-            .resize({
-              width,
-              height,
-              position: 'left top',
-            })
-            .toBuffer();
+ipcMain.handle('splitImg', async (event, imgPath: string): Promise<{ left: string; right: string }> => {
+    const org = sharp(imgPath);
+    const metadata = await org.metadata();
+    const { width = 0, height = 0 } = metadata;
+    const halfWidth = Math.floor(width / 2 - divider / 2);
 
-          const rightPromise = org
-            .clone()
-            .resize({
-              width,
-              height,
-              position: 'right top',
-            })
-            .toBuffer();
-          return Promise.all([leftPromise, rightPromise]);
-        })
-        .then(([left, right]) => {
-          resolve({
-            left: imgBufferToString(left),
-            right: imgBufferToString(right),
-          });
-        })
-        .catch(reject);
-    });
+    const [leftBuffer, rightBuffer] = await Promise.all([
+      org
+        .clone()
+        .extract({ left: 0, top: 0, width: halfWidth, height })
+        .toBuffer(),
+      org
+        .clone()
+        .extract({ left: width - halfWidth, top: 0, width: halfWidth, height })
+        .toBuffer(),
+    ]);
+
+    return {
+      left: imgBufferToString(leftBuffer),
+      right: imgBufferToString(rightBuffer),
+    };
   },
 );
 
