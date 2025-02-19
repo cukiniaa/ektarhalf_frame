@@ -2,7 +2,6 @@ import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import { useState } from 'react';
 import { GoFileDirectory } from 'react-icons/go';
 import { FaArrowRotateRight } from 'react-icons/fa6';
-import { Image } from 'image-js';
 import './App.css';
 
 function View() {
@@ -13,31 +12,16 @@ function View() {
   const [rightImg, setRightImg] = useState<string | null>(null);
 
   const splitImg = async (path: string) => {
-    const org = await Image.load(path);
-    const left = org.crop({
-      x: 0,
-      y: 0,
-      width: org.width / 2,
-      height: org.height,
-    });
-    setLeftImg(left.toDataURL());
-
-    const right = org.crop({
-      x: org.width / 2,
-      y: 0,
-      width: org.width / 2,
-      height: org.height,
-    });
-    setRightImg(right.toDataURL());
+    const { left, right } = await window.electron.ipcRenderer.splitImg(path);
+    setLeftImg(left);
+    setRightImg(right);
   };
 
   const setNewImg = async (newPath: string) => {
-    const imgBuffer = await window.electron.ipcRenderer.getImg(newPath);
-    const blob = new Blob([imgBuffer], { type: 'image/jpeg' });
-    const url = URL.createObjectURL(blob);
+    const imgBase64 = await window.electron.ipcRenderer.getImg(newPath);
     setImgPath(newPath);
-    setImgUrl(url);
-    splitImg(url);
+    setImgUrl(imgBase64);
+    splitImg(newPath);
   };
 
   const handlePhotoSelected = async (

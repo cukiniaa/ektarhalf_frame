@@ -12,6 +12,7 @@ import path from 'path';
 import fs from 'fs';
 import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
+import sharp from 'sharp';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
@@ -25,11 +26,16 @@ class AppUpdater {
 }
 
 let mainWindow: BrowserWindow | null = null;
+let divider = 70;
 
 ipcMain.on('ipc-example', async (event, arg) => {
   const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
   console.log(msgTemplate(arg));
   event.reply('ipc-example', msgTemplate('pong'));
+});
+
+ipcMain.handle('setDivider', async (_, newDivider: number) => {
+  divider = newDivider;
 });
 
 const getImgInDir = async (dir: string): Promise<string[]> => {
@@ -46,12 +52,66 @@ const getImgInDir = async (dir: string): Promise<string[]> => {
   });
 };
 
-const getImgBuffer = async (imgPath: string): Promise<Buffer> => {
+const imgBufferToString = (img: Buffer): string => {
+  const str = Buffer.from(img).toString('base64');
+  return `data:image/png;base64,${str}`;
+};
+
+const getImgBase64 = async (imgPath: string): Promise<string> => {
   return new Promise((resolve, reject) => {
     // TODO reject if not found
-    resolve(fs.readFileSync(imgPath));
+    const img = fs.readFileSync(imgPath);
+    resolve(imgBufferToString(img));
   });
 };
+
+ipcMain.handle('getImg', async (event, imgPath: string): Promise<string> => {
+  return getImgBase64(imgPath);
+});
+
+ipcMain.handle(
+  'splitImg',
+  async (event, imgPath: string): Promise<{ left: string; right: string }> => {
+    return new Promise((resolve, reject) => {
+      let width: number;
+      let height: number;
+      const org = sharp(imgPath);
+      org
+        .metadata()
+        .then((metadata) => {
+          width = Math.round((metadata.width || 0) / 2) - divider / 2;
+          height = metadata.height || 0;
+        })
+        .then(() => {
+          const leftPromise = org
+            .clone()
+            .resize({
+              width,
+              height,
+              position: 'left top',
+            })
+            .toBuffer();
+
+          const rightPromise = org
+            .clone()
+            .resize({
+              width,
+              height,
+              position: 'right top',
+            })
+            .toBuffer();
+          return Promise.all([leftPromise, rightPromise]);
+        })
+        .then(([left, right]) => {
+          resolve({
+            left: imgBufferToString(left),
+            right: imgBufferToString(right),
+          });
+        })
+        .catch(reject);
+    });
+  },
+);
 
 ipcMain.handle(
   'getNextImgPath',
@@ -75,10 +135,6 @@ ipcMain.handle(
     });
   },
 );
-
-ipcMain.handle('getImg', async (event, imgPath: string): Promise<Buffer> => {
-  return getImgBuffer(imgPath);
-});
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');

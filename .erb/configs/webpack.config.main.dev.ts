@@ -28,6 +28,10 @@ const configuration: webpack.Configuration = {
     preload: path.join(webpackPaths.srcMainPath, 'preload.ts'),
   },
 
+  externals: {
+    sharp: 'commonjs sharp',
+  },
+
   output: {
     path: webpackPaths.dllPath,
     filename: '[name].bundle.dev.js',
