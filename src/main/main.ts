@@ -34,7 +34,7 @@ ipcMain.on('ipc-example', async (event, arg) => {
   event.reply('ipc-example', msgTemplate('pong'));
 });
 
-ipcMain.handle('setDivider', async (_, newDivider: number) => {
+ipcMain.handle('setDivider', async (_event, newDivider: number) => {
   divider = newDivider;
 });
 
@@ -65,11 +65,13 @@ const getImgBase64 = async (imgPath: string): Promise<string> => {
   });
 };
 
-ipcMain.handle('getImg', async (event, imgPath: string): Promise<string> => {
+ipcMain.handle('getImg', async (_event, imgPath: string): Promise<string> => {
   return getImgBase64(imgPath);
 });
 
-ipcMain.handle('splitImg', async (event, imgPath: string): Promise<{ left: string; right: string }> => {
+ipcMain.handle(
+  'splitImg',
+  async (_event, imgPath: string): Promise<{ left: string; right: string }> => {
     const org = sharp(imgPath);
     const metadata = await org.metadata();
     const { width = 0, height = 0 } = metadata;
@@ -95,7 +97,7 @@ ipcMain.handle('splitImg', async (event, imgPath: string): Promise<{ left: strin
 
 ipcMain.handle(
   'getNextImgPath',
-  async (event, imgPath: string, direction: -1 | 1): Promise<string> => {
+  async (_event, imgPath: string, direction: -1 | 1): Promise<string> => {
     return new Promise((resolve, reject) => {
       const dir = imgPath.match(/(.*)[/]/);
       if (!dir || dir.length < 2) {
