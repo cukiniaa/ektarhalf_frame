@@ -91,7 +91,7 @@ function View() {
             ←
           </button>
           <div className="g-photo-grid">
-            <div className="g-photo-wrapper">
+            <div className="g-half-frame">
               <div className="g-photo-item">
                 <img
                   src={leftImg || undefined}
@@ -108,7 +108,7 @@ function View() {
                 <FaArrowRotateRight />
               </button>
             </div>
-            <div className="g-photo-wrapper">
+            <div className="g-half-frame">
               <div className="g-photo-item">
                 <img
                   src={rightImg || undefined}
