@@ -29,12 +29,17 @@
 .menu-item {
   background-color: #d0d0d0;
   border: none;
+  display: flex;
   align-items: center;
   justify-content: center;
   vertical-align: middle;
   padding: 8px 8px;
   cursor: pointer;
   border-radius: 8px;
+}
+
+.menu-right {
+  margin-left: auto;
 }
 
 .menu-item:hover {
@@ -124,7 +129,7 @@
 
 .g-button {
   justify-self: flex-end;
-  margin-top: 10px;
+  margin: 10 0 10 0;
   width: 40px;
   height: 40px;
   background-color: #e0e0e0;
@@ -162,6 +167,9 @@
   font-size: 18px;
   cursor: pointer;
   transition: background 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .side-button:hover {
   background-color: #555;

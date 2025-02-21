@@ -76,6 +76,7 @@ function View() {
           />
         </label>
         <p className="menu-text">{imgDir}</p>
+        <button className="menu-item menu-right">Save</button>
       </div>
 
       <div className="main-content">
