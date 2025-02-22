@@ -79,63 +79,69 @@ function View() {
         <button className="menu-item menu-right">Save</button>
       </div>
 
-      <div className="main-content">
-        <div className="g-container-small-photo">
-          <img src={imgUrl || undefined} alt="Main" className="g-top-photo" />
-        </div>
-        <div className="g-container">
-          <button
-            type="button"
-            className="side-button left-button"
-            onClick={nextLeft}
-          >
-            ←
-          </button>
-          <div className="g-photo-grid">
-            <div className="g-half-frame">
-              <div className="g-photo-item">
-                <img
-                  src={leftImg || undefined}
-                  alt="Left"
-                  className="g-large-photo"
-                />
-              </div>
-              <button
-                type="button"
-                className="g-button"
-                id="left-img"
-                onClick={rotateImg}
-              >
-                <FaArrowRotateRight />
-              </button>
-            </div>
-            <div className="g-half-frame">
-              <div className="g-photo-item">
-                <img
-                  src={rightImg || undefined}
-                  alt="Right"
-                  className="g-large-photo"
-                />
-              </div>
-              <button
-                type="button"
-                className="g-button"
-                id="right-img"
-                onClick={rotateImg}
-              >
-                <FaArrowRotateRight />
-              </button>
-            </div>
+      {imgUrl ? (
+        <div className="main-content">
+          <div className="g-container-small-photo">
+            <img src={imgUrl || undefined} alt="Main" className="g-top-photo" />
           </div>
-          <button
-            type="button"
-            className="side-button right-button"
-            onClick={nextRight}
-          >
-            →
-          </button>
+          <div className="g-container">
+            <button
+              type="button"
+              className="side-button left-button"
+              onClick={nextLeft}
+            >
+              ←
+            </button>
+            <div className="g-photo-grid">
+              <div className="g-half-frame">
+                <div className="g-photo-item">
+                  <img
+                    src={leftImg || undefined}
+                    alt="Left"
+                    className="g-large-photo"
+                  />
+                </div>
+                <button
+                  type="button"
+                  className="g-button"
+                  id="left-img"
+                  onClick={rotateImg}
+                >
+                  <FaArrowRotateRight />
+                </button>
+              </div>
+              <div className="g-half-frame">
+                <div className="g-photo-item">
+                  <img
+                    src={rightImg || undefined}
+                    alt="Right"
+                    className="g-large-photo"
+                  />
+                </div>
+                <button
+                  type="button"
+                  className="g-button"
+                  id="right-img"
+                  onClick={rotateImg}
+                >
+                  <FaArrowRotateRight />
+                </button>
+              </div>
+            </div>
+            <button
+              type="button"
+              className="side-button right-button"
+              onClick={nextRight}
+            >
+              →
+            </button>
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="empty-content menu-text">
+          <p> Choose directory to start</p>
+        </div>
+      )}
     </div>
   );
 }
