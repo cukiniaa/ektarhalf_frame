@@ -34,6 +34,16 @@ function View() {
     setImgDir(dir ? dir[1] : null);
   };
 
+  const saveToSelectedDir = async () => {
+    const dir = await window.electron.ipcRenderer.openSaveDialog();
+    if (!leftImg || !rightImg || !imgDir || !imgPath) return;
+    const match = imgPath.match(/.*[/\\](.*)[.](jpe?g|png)/);
+    if (!match) return;
+    const [, fn, ext] = match;
+    if (!fn || !ext) return;
+    window.electron.ipcRenderer.saveSplitImgs(leftImg, rightImg, dir, fn, ext);
+  };
+
   const nextRight = async () => {
     if (!imgPath) return;
     const newImg = await window.electron.ipcRenderer.getNextImgPath(imgPath, 1);
@@ -77,7 +87,18 @@ function View() {
           />
         </label>
         <p className="menu-text">{imgDir}</p>
-        <button className="menu-item menu-right">Save</button>
+        {imgUrl ? (
+          <label className="menu-item menu-right" htmlFor="dir-input">
+            Save
+            <input
+              id="dir-input"
+              type="file"
+              accept="image/*"
+              onClick={saveToSelectedDir}
+              style={{ display: 'none' }}
+            />
+          </label>
+        ) : null}
       </div>
 
       {imgUrl ? (

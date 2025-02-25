@@ -33,6 +33,18 @@ const electronHandler = {
     rotateImg: (imgBase64: string): Promise<string> => {
       return ipcRenderer.invoke('rotateImg', imgBase64);
     },
+    openSaveDialog: (): Promise<string> => {
+      return ipcRenderer.invoke('openSaveDialog');
+    },
+    saveSplitImgs: (
+      left: string,
+      right: string,
+      dir: string,
+      name: string,
+      ext: string,
+    ): Promise<string> => {
+      return ipcRenderer.invoke('saveSplitImgs', [left, right], dir, name, ext);
+    },
   },
 };
 

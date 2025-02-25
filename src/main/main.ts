@@ -10,7 +10,7 @@
  */
 import path from 'path';
 import fs from 'fs';
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import sharp from 'sharp';
 import log from 'electron-log';
@@ -133,6 +133,45 @@ ipcMain.handle(
           resolve(imgBufferToString(rotated));
         })
         .catch(reject);
+    });
+  },
+);
+
+ipcMain.handle('openSaveDialog', async () => {
+  return new Promise((resolve, reject) => {
+    if (!mainWindow) {
+      reject();
+      return;
+    }
+    dialog
+      .showOpenDialog(mainWindow, {
+        properties: ['openDirectory'],
+      })
+      .then((result) => {
+        resolve(result.filePaths[0]);
+      })
+      .catch(reject);
+  });
+});
+
+ipcMain.handle(
+  'saveSplitImgs',
+  async (
+    _event,
+    imgs: string[],
+    dir: string,
+    fn: string,
+    ext: string,
+  ): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      resolve(
+        imgs.forEach((img, i) => {
+          const fpath = path.join(dir, `${fn}_${i}.${ext}`);
+          const data = img.replace(/^data:image\/\w+;base64,/, '');
+          const imgBuffer = Buffer.from(data, 'base64');
+          return fs.writeFile(fpath, imgBuffer, reject);
+        }),
+      );
     });
   },
 );
