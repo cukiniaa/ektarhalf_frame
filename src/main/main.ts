@@ -45,7 +45,7 @@ const getImgInDir = async (dir: string): Promise<string[]> => {
         reject(err);
       }
       const images = files
-        .filter((file) => /\.(png|jpe?g|gif)$/.test(file))
+        .filter((file) => /\.(png|jpe?g)$/.test(file))
         .map((file) => path.join(dir, file));
       resolve(images);
     });
@@ -54,7 +54,7 @@ const getImgInDir = async (dir: string): Promise<string[]> => {
 
 const imgBufferToString = (img: Buffer): string => {
   const str = Buffer.from(img).toString('base64');
-  return `data:image/png;base64,${str}`;
+  return `data:image/jpeg;base64,${str}`;
 };
 
 const getImgBase64 = async (imgPath: string): Promise<string> => {
