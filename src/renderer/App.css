@@ -12,6 +12,7 @@
 }
 
 .app-container {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -19,6 +20,7 @@
 }
 
 .menu-bar {
+  font-size: 12px;
   background-color: #e0e0e0;
   padding: 8px;
   display: flex;
@@ -48,8 +50,6 @@
 }
 
 .menu-text {
-  font-size: 12px;
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
   padding: 8px;
   margin: 0;
   text-align: center;
