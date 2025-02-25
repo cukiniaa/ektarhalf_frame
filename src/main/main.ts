@@ -59,9 +59,12 @@ const imgBufferToString = (img: Buffer): string => {
 
 const getImgBase64 = async (imgPath: string): Promise<string> => {
   return new Promise((resolve, reject) => {
-    // TODO reject if not found
-    const img = fs.readFileSync(imgPath);
-    resolve(imgBufferToString(img));
+    try {
+      const img = fs.readFileSync(imgPath);
+      resolve(imgBufferToString(img));
+    } catch (err) {
+      reject(err);
+    }
   });
 };
 
@@ -118,7 +121,9 @@ ipcMain.handle(
   },
 );
 
-ipcMain.handle('rotateImg', async (_event, imgBase64: string): Promise<string> => {
+ipcMain.handle(
+  'rotateImg',
+  async (_event, imgBase64: string): Promise<string> => {
     return new Promise((resolve, reject) => {
       const img = Buffer.from(imgBase64.split(',')[1], 'base64');
       sharp(img)

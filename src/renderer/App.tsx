@@ -1,5 +1,5 @@
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { GoFileDirectory } from 'react-icons/go';
 import { FaArrowRotateRight } from 'react-icons/fa6';
 import './App.css';
@@ -66,9 +66,10 @@ function View() {
   return (
     <div className="app-container">
       <div className="menu-bar">
-        <label className="menu-item">
+        <label className="menu-item" htmlFor="file-input">
           <GoFileDirectory />
           <input
+            id="file-input"
             type="file"
             accept="image/*"
             onChange={handlePhotoSelected}
