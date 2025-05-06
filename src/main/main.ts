@@ -15,7 +15,7 @@ import { autoUpdater } from 'electron-updater';
 import sharp from 'sharp';
 import log from 'electron-log';
 import MenuBuilder from './menu';
-import { resolveHtmlPath } from './util';
+import { resolveHtmlPath, imgBufferToString, getImgBase64, getImgInDir } from './util';
 
 class AppUpdater {
   constructor() {
@@ -37,36 +37,6 @@ ipcMain.on('ipc-example', async (event, arg) => {
 ipcMain.handle('setDivider', async (_event, newDivider: number) => {
   divider = newDivider;
 });
-
-const getImgInDir = async (dir: string): Promise<string[]> => {
-  return new Promise((resolve, reject) => {
-    fs.readdir(dir, (err, files) => {
-      if (err) {
-        reject(err);
-      }
-      const images = files
-        .filter((file) => /\.(png|jpe?g)$/.test(file))
-        .map((file) => path.join(dir, file));
-      resolve(images);
-    });
-  });
-};
-
-const imgBufferToString = (img: Buffer): string => {
-  const str = Buffer.from(img).toString('base64');
-  return `data:image/jpeg;base64,${str}`;
-};
-
-const getImgBase64 = async (imgPath: string): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    try {
-      const img = fs.readFileSync(imgPath);
-      resolve(imgBufferToString(img));
-    } catch (err) {
-      reject(err);
-    }
-  });
-};
 
 ipcMain.handle('getImg', async (_event, imgPath: string): Promise<string> => {
   return getImgBase64(imgPath);
