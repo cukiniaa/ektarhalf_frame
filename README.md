@@ -1,4 +1,3 @@
-
 <br>
 
 <p>
@@ -9,7 +8,6 @@
 <img src="Screenshot 2025-02-21.png" style="width:70%;">
 </div>
 <br>
-
 
 ## Install
 
