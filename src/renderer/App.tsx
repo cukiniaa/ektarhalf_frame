@@ -28,30 +28,42 @@ function View() {
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const { files } = event.target;
-    if (!files || !files.length) return;
+    if (!files || !files.length) {
+      return;
+    }
     setNewImg(files[0].path);
-    const dir = files[0].path.match(/(.*)[/\\]/);
+    const dir = files[0].path.match(/(.*)[/\\]/); // TODO separate function for this and test
     setImgDir(dir ? dir[1] : null);
   };
 
   const saveToSelectedDir = async () => {
     const dir = await window.electron.ipcRenderer.openSaveDialog();
-    if (!leftImg || !rightImg || !imgDir || !imgPath) return;
+    if (!leftImg || !rightImg || !imgDir || !imgPath) {
+      return;
+    }
     const match = imgPath.match(/.*[/\\](.*)[.](jpe?g|png)/);
-    if (!match) return;
+    if (!match) {
+      return;
+    }
     const [, fn, ext] = match;
-    if (!fn || !ext) return;
+    if (!fn || !ext) {
+      return;
+    }
     window.electron.ipcRenderer.saveSplitImgs(leftImg, rightImg, dir, fn, ext);
   };
 
   const nextRight = async () => {
-    if (!imgPath) return;
+    if (!imgPath) {
+      return;
+    }
     const newImg = await window.electron.ipcRenderer.getNextImgPath(imgPath, 1);
     setNewImg(newImg);
   };
 
   const nextLeft = async () => {
-    if (!imgPath) return;
+    if (!imgPath) {
+      return;
+    }
     const newImgPath = await window.electron.ipcRenderer.getNextImgPath(
       imgPath,
       -1,
@@ -68,7 +80,9 @@ function View() {
     };
     const state = event.currentTarget.id as keyof typeof stateMap;
     const { img, setFunc } = stateMap[state] || [];
-    if (!img || !setFunc) return;
+    if (!img || !setFunc) {
+      return;
+    }
 
     setFunc(await window.electron.ipcRenderer.rotateImg(img));
   };
