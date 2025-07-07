@@ -94,16 +94,9 @@ function View() {
         </button>
         <p className="menu-text">{imgDir}</p>
         {imgUrl ? (
-          <label className="menu-item menu-right" htmlFor="dir-input">
+          <button title='Save' className="menu-item menu-right" onClick={saveToSelectedDir}>
             Save
-            <input
-              id="dir-input"
-              type="file"
-              accept="image/*"
-              onClick={saveToSelectedDir}
-              style={{ display: 'none' }}
-            />
-          </label>
+          </button>
         ) : null}
       </div>
 
@@ -130,6 +123,7 @@ function View() {
                   />
                 </div>
                 <button
+                  title='Rotate'
                   type="button"
                   className="g-button"
                   id="left-img"
@@ -147,6 +141,7 @@ function View() {
                   />
                 </div>
                 <button
+                  title='Rotate'
                   type="button"
                   className="g-button"
                   id="right-img"
