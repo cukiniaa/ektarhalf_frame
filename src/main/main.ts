@@ -125,7 +125,9 @@ ipcMain.handle('openFileDialog', async () => {
           resolve(null);
           return;
         }
-        resolve(result.filePaths[0]);
+        const file = result.filePaths[0];
+        const dir = path.dirname(file);
+        resolve({ file, dir });
       })
       .catch(reject);
   });

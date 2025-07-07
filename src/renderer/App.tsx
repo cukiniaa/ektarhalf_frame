@@ -26,13 +26,12 @@ function View() {
   };
 
   const selectPhoto = async () => {
-    const file = await window.electron.ipcRenderer.openFileDialog();
-    if (!file) {
+    const { file, dir } = await window.electron.ipcRenderer.openFileDialog();
+    if (!file || !dir) {
       return;
     }
     setNewImg(file);
-    const dir = file.match(/(.*)[/\\]/);
-    setImgDir(dir ? dir[1] : null);
+    setImgDir(dir);
   };
 
   const saveToSelectedDir = async () => {

@@ -36,7 +36,7 @@ const electronHandler = {
     openSaveDialog: (): Promise<string> => {
       return ipcRenderer.invoke('openSaveDialog');
     },
-    openFileDialog: (): Promise<string> => {
+    openFileDialog: (): Promise<{ file: string; dir: string }> => {
       return ipcRenderer.invoke('openFileDialog');
     },
     saveSplitImgs: (
