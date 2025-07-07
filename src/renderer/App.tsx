@@ -2,6 +2,7 @@ import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import React, { useState } from 'react';
 import { GoFileDirectory } from 'react-icons/go';
 import { FaArrowRotateRight } from 'react-icons/fa6';
+import { PiCursorClickThin } from "react-icons/pi";
 import './App.css';
 
 function View() {
@@ -24,15 +25,13 @@ function View() {
     splitImg(newPath);
   };
 
-  const handlePhotoSelected = async (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const { files } = event.target;
-    if (!files || !files.length) {
+  const selectPhoto = async () => {
+    const file = await window.electron.ipcRenderer.openFileDialog();
+    if (!file) {
       return;
     }
-    setNewImg(files[0].path);
-    const dir = files[0].path.match(/(.*)[/\\]/); // TODO separate function for this and test
+    setNewImg(file);
+    const dir = file.match(/(.*)[/\\]/);
     setImgDir(dir ? dir[1] : null);
   };
 
@@ -90,16 +89,9 @@ function View() {
   return (
     <div className="app-container">
       <div className="menu-bar">
-        <label className="menu-item" htmlFor="file-input">
+        <button title='Choose a photo' className='menu-item' onClick={selectPhoto}>
           <GoFileDirectory />
-          <input
-            id="file-input"
-            type="file"
-            accept="image/*"
-            onChange={handlePhotoSelected}
-            style={{ display: 'none' }}
-          />
-        </label>
+        </button>
         <p className="menu-text">{imgDir}</p>
         {imgUrl ? (
           <label className="menu-item menu-right" htmlFor="dir-input">
@@ -174,7 +166,8 @@ function View() {
           </div>
         </div>
       ) : (
-        <div className="empty-content menu-text">
+        <div className="empty-content menu-text" onClick={selectPhoto}>
+          <PiCursorClickThin />
           <p> Choose directory to start</p>
         </div>
       )}

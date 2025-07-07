@@ -107,6 +107,30 @@ ipcMain.handle(
   },
 );
 
+ipcMain.handle('openFileDialog', async () => {
+  return new Promise((resolve, reject) => {
+    if (!mainWindow) {
+      reject(new Error('No main window'));
+      return;
+    }
+    dialog
+      .showOpenDialog(mainWindow, {
+        properties: ['openFile'],
+        filters: [
+          { name: 'Images', extensions: ['jpg', 'jpeg', 'png'] },
+        ],
+      })
+      .then((result) => {
+        if (result.filePaths.length === 0) {
+          resolve(null);
+          return;
+        }
+        resolve(result.filePaths[0]);
+      })
+      .catch(reject);
+  });
+});
+
 ipcMain.handle('openSaveDialog', async () => {
   return new Promise((resolve, reject) => {
     if (!mainWindow) {
