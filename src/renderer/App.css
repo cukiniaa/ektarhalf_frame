@@ -55,13 +55,17 @@
   text-align: center;
 }
 
-.empty-content {
+.empty-content-button {
+  all: unset; /* Reset default button styles */
   flex: 1;
   flex-direction: column;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 20px;
+  text-align: center;
+  font-family: inherit;
+  cursor: pointer;
 }
 
 .main-content {

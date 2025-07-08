@@ -170,10 +170,14 @@ function View() {
           </div>
         </div>
       ) : (
-        <div className="empty-content menu-text" onClick={selectPhoto}>
+        <button
+          type="button"
+          className="empty-content-button"
+          onClick={selectPhoto}
+        >
           <PiCursorClickThin />
-          <p> Choose directory to start</p>
-        </div>
+          <p>Choose directory to start</p>
+        </button>
       )}
     </div>
   );
