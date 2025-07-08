@@ -15,7 +15,12 @@ import { autoUpdater } from 'electron-updater';
 import sharp from 'sharp';
 import log from 'electron-log';
 import MenuBuilder from './menu';
-import { resolveHtmlPath, imgBufferToString, getImgBase64, getImgInDir } from './util';
+import {
+  resolveHtmlPath,
+  imgBufferToString,
+  getImgBase64,
+  getImgInDir,
+} from './util';
 
 class AppUpdater {
   constructor() {
@@ -116,9 +121,7 @@ ipcMain.handle('openFileDialog', async () => {
     dialog
       .showOpenDialog(mainWindow, {
         properties: ['openFile'],
-        filters: [
-          { name: 'Images', extensions: ['jpg', 'jpeg', 'png'] },
-        ],
+        filters: [{ name: 'Images', extensions: ['jpg', 'jpeg', 'png'] }],
       })
       .then((result) => {
         if (result.filePaths.length === 0) {

@@ -2,7 +2,7 @@ import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import React, { useState } from 'react';
 import { GoFileDirectory } from 'react-icons/go';
 import { FaArrowRotateRight } from 'react-icons/fa6';
-import { PiCursorClickThin } from "react-icons/pi";
+import { PiCursorClickThin } from 'react-icons/pi';
 import './App.css';
 
 function View() {
@@ -88,12 +88,22 @@ function View() {
   return (
     <div className="app-container">
       <div className="menu-bar">
-        <button title='Choose a photo' className='menu-item' onClick={selectPhoto}>
+        <button
+          type="button"
+          title="Choose a photo"
+          className="menu-item"
+          onClick={selectPhoto}
+        >
           <GoFileDirectory />
         </button>
         <p className="menu-text">{imgDir}</p>
         {imgUrl ? (
-          <button title='Save' className="menu-item menu-right" onClick={saveToSelectedDir}>
+          <button
+            type="button"
+            title="Save"
+            className="menu-item menu-right"
+            onClick={saveToSelectedDir}
+          >
             Save
           </button>
         ) : null}
@@ -122,7 +132,7 @@ function View() {
                   />
                 </div>
                 <button
-                  title='Rotate'
+                  title="Rotate"
                   type="button"
                   className="g-button"
                   id="left-img"
@@ -140,7 +150,7 @@ function View() {
                   />
                 </div>
                 <button
-                  title='Rotate'
+                  title="Rotate"
                   type="button"
                   className="g-button"
                   id="right-img"
