@@ -125,7 +125,7 @@ ipcMain.handle('openFileDialog', async () => {
       })
       .then((result) => {
         if (result.filePaths.length === 0) {
-          resolve(null);
+          resolve({ file: null, dir: null });
           return;
         }
         const file = result.filePaths[0];
@@ -147,6 +147,10 @@ ipcMain.handle('openSaveDialog', async () => {
         properties: ['openDirectory'],
       })
       .then((result) => {
+        if (result.filePaths.length === 0) {
+          resolve(null);
+          return;
+        }
         resolve(result.filePaths[0]);
       })
       .catch(reject);
