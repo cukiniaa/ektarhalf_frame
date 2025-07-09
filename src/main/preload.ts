@@ -42,11 +42,10 @@ const electronHandler = {
     saveSplitImgs: (
       left: string,
       right: string,
-      dir: string,
-      name: string,
-      ext: string,
+      imgPath: string,
+      dest: string,
     ): Promise<string> => {
-      return ipcRenderer.invoke('saveSplitImgs', [left, right], dir, name, ext);
+      return ipcRenderer.invoke('saveSplitImgs', [left, right], imgPath, dest);
     },
   },
 };

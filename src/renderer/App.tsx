@@ -35,19 +35,11 @@ function View() {
   };
 
   const saveToSelectedDir = async () => {
-    const dir = await window.electron.ipcRenderer.openSaveDialog();
-    if (!leftImg || !rightImg || !imgDir || !imgPath) {
+    const dest = await window.electron.ipcRenderer.openSaveDialog();
+    if (!dest || !leftImg || !rightImg || !imgPath) {
       return;
     }
-    const match = imgPath.match(/.*[/\\](.*)[.](jpe?g|png)/);
-    if (!match) {
-      return;
-    }
-    const [, fn, ext] = match;
-    if (!fn || !ext) {
-      return;
-    }
-    window.electron.ipcRenderer.saveSplitImgs(leftImg, rightImg, dir, fn, ext);
+    window.electron.ipcRenderer.saveSplitImgs(leftImg, rightImg, imgPath, dest);
   };
 
   const nextRight = async () => {

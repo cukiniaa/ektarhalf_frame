@@ -162,14 +162,15 @@ ipcMain.handle(
   async (
     _event,
     imgs: string[],
-    dir: string,
-    fn: string,
-    ext: string,
+    imgPath: string,
+    dest: string,
   ): Promise<void> => {
     return new Promise((resolve, reject) => {
+      const fn = path.basename(imgPath).split('.')[0];
+      const ext = path.extname(imgPath);
       resolve(
         imgs.forEach((img, i) => {
-          const fpath = path.join(dir, `${fn}_${i}.${ext}`);
+          const fpath = path.join(dest, `${fn}_${i}${ext}`);
           const data = img.replace(/^data:image\/\w+;base64,/, '');
           const imgBuffer = Buffer.from(data, 'base64');
           return fs.writeFile(fpath, imgBuffer, reject);
